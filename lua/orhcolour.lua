@@ -51,7 +51,7 @@ end
 local highlight_groups = {
 	-- text analysis
   Normal = {fg = orh.base[0]},
-	Comment = {fg = orh.base[3], style = 'italic'},
+	Comment = {fg = orh.base[3], italic = true},
 	NonText = {fg = orh.base[5]},
 	-- EndOfBuffer = 'NonText',
 	-- Whitespace  = 'NonText',
@@ -68,6 +68,7 @@ local highlight_groups = {
 	Identifier = Normal,
 	Function = {fg = orh.blush[0]},
 
+  --[[
 	-- syntax
 	Statement   = {fg = orh.blush[1]},
 	Conditional = {fg = orh.blush[1], style = 'italic'},
@@ -175,24 +176,22 @@ local highlight_groups = {
 	WarningMsg = {fg = orh.blush[1], style = 'bold'},
 	Question   = {fg = orh.blush[1], style = 'underline'},
 
-  --[[
 	--lsp / diagnostics
-	DiagnosticError = 'Error',
-	DiagnosticFloatingError = 'ErrorMsg',
-	DiagnosticSignError = 'DiagnosticFloatingError',
+	-- DiagnosticError = 'Error',
+	-- DiagnosticFloatingError = 'ErrorMsg',
+	-- DiagnosticSignError = 'DiagnosticFloatingError',
 
-	DiagnosticWarn = 'Warning',
-	DiagnosticFloatingWarn = 'WarningMsg',
-	DiagnosticSignWarn = 'DiagnosticFloatingWarn',
+	-- DiagnosticWarn = 'Warning',
+	-- DiagnosticFloatingWarn = 'WarningMsg',
+	-- DiagnosticSignWarn = 'DiagnosticFloatingWarn',
 
-	DiagnosticHint = 'Hint',
-	DiagnosticFloatingHint = 'HintMsg',
-	DiagnosticSignHint = 'DiagnosticFloatingHint',
+	-- DiagnosticHint = 'Hint',
+	-- DiagnosticFloatingHint = 'HintMsg',
+	-- DiagnosticSignHint = 'DiagnosticFloatingHint',
 
-	DiagnosticInfo = 'Info',
-	DiagnosticFloatingInfo = 'InfoMsg',
-	DiagnosticSignInfo = 'DiagnosticFloatingInfo',
-  --]]
+	-- DiagnosticInfo = 'Info',
+	-- DiagnosticFloatingInfo = 'InfoMsg',
+	-- DiagnosticSignInfo = 'DiagnosticFloatingInfo',
 
 	DiagnosticUnderlineError = {style = {'undercurl', color = orh.blush[2]}},
 	DiagnosticUnderlineHint  = {style = {'undercurl', color = orh.sky[0]}},
@@ -227,6 +226,7 @@ local highlight_groups = {
 
 	-- misc
 	Directory = {fg = orh.sky[0], style = 'bold'},
+--]]
 }
 
 --[[
