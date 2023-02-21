@@ -223,7 +223,7 @@ local highlight_groups = {
 	-- misc
 	Directory = {fg = orh.sky[0], style = 'bold'},
 }
---[[
+
 local highlight_languages = {
   -- git
 	diffAdded = 'DiffAdd',
@@ -239,18 +239,18 @@ local highlight_languages = {
 	gitconfigNone  = 'Operator',
 	gitconfigSection = 'Structure',
 	gitconfigVariable = 'Label',
-	gitreorh.baseBreak = 'Keyword',
-	gitreorh.baseCommit = 'Tag',
-	gitreorh.baseDrop = 'Exception',
-	gitreorh.baseEdit = 'Define',
-	gitreorh.baseExec = 'PreProc',
-	gitreorh.baseFixup = 'gitreorh.baseSquash',
-	gitreorh.baseMerge = 'PreProc',
-	gitreorh.basePick  = 'Include',
-	gitreorh.baseReset = 'gitreorh.baseLabel',
-	gitreorh.baseReword  = 'gitreorh.basePick',
-	gitreorh.baseSquash  = 'Macro',
-	gitreorh.baseSummary = 'Title',
+	-- gitreorh.baseBreak = 'Keyword',
+	-- gitreorh.baseCommit = 'Tag',
+	-- gitreorh.baseDrop = 'Exception',
+	-- gitreorh.baseEdit = 'Define',
+	-- gitreorh.baseExec = 'PreProc',
+	-- gitreorh.baseFixup = 'gitreorh.baseSquash',
+	-- gitreorh.baseMerge = 'PreProc',
+	-- gitreorh.basePick  = 'Include',
+	-- gitreorh.baseReset = 'gitreorh.baseLabel',
+	-- gitreorh.baseReword  = 'gitreorh.basePick',
+	-- gitreorh.baseSquash  = 'Macro',
+	-- gitreorh.baseSummary = 'Title',
 
 	-- html
 	htmlArg    = 'Label',
@@ -400,7 +400,6 @@ local highlight_languages = {
 	yamlInline = 'Delimiter',
 	yamlKey = 'Label',
 }
---]]
 
 local async_load_plugin
 
@@ -412,7 +411,7 @@ end
 
 async_load_plugin = vim.loop.new_async(vim.schedule_wrap(function()
   orh.terminal_color()
-  --set_hl(highlight_language)
+  set_hl(highlight_language)
   async_load_plugin:close()
 end))
 
