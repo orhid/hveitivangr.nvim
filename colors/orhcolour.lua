@@ -29,7 +29,7 @@ local orh = {}
 local highlight_groups = {
 	-- text analysis
   Normal = {fg = orh.base[0]},
-	Comment = {fg = '#ffff00', italic = true},
+	Comment = {fg = '#695c4f', italic = true},
 	NonText = {fg = orh.base[5]},
 	EndOfBuffer = 'NonText',
 	Whitespace  = 'NonText',
