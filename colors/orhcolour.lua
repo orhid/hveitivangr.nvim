@@ -2,26 +2,26 @@ vim.g.colors_name = 'orhcolour'
 
 local orh = {}
 orh.base = {
-  [0] = '#F7F3ED',
-  [1] = '#E8DFD5',
-  [2] = '#A38F77',
-  [3] = '#695C4F',
-  [4] = '#5C5249',
-  [5] = '#4A433D',
-  [6] = '#36322F',
+  [0] = {'#F7F3ED', 255, black},
+  [1] = {'#E8DFD5', 255, black},
+  [2] = {'#A38F77', 255, black},
+  [3] = {'#695C4F', 255, black},
+  [4] = {'#5C5249', 255, black},
+  [5] = {'#4A433D', 255, black},
+  [6] = {'#36322F', 255, black},
 }
 orh.blush = {
-  [0] = '#E3D586',
-  [1] = '#E0AB6E',
-  [2] = '#DE705F',
+  [0] = {'#E3D586', 255, black},
+  [1] = {'#E0AB6E', 255, black},
+  [2] = {'#DE705F', 255, black},
 }
 orh.sky = {
-  [0] = '#A8B891',
-  [1] = '#5B785C',
-  [2] = '#B6D9DE',
-  [3] = '#7BAEC7',
-  [4] = '#4E648A',
-  [5] = '#B0718A',
+  [0] = {'#A8B891', 255, black},
+  [1] = {'#5B785C', 255, black},
+  [2] = {'#B6D9DE', 255, black},
+  [3] = {'#7BAEC7', 255, black},
+  [4] = {'#4E648A', 255, black},
+  [5] = {'#B0718A', 255, black},
 }
 
 local highlight_group_normal = {fg = orh.base[0]}
