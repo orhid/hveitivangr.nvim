@@ -1,6 +1,9 @@
 -- colours
 
-local orh = {}
+local orh = {
+  test = 'test'
+}
+
 orh.base = {
   [0] = '#f7f3ed',
   [1] = '#e8dfd5',
