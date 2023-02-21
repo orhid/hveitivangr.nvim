@@ -30,7 +30,7 @@ local highlight_group_normal = {fg = orh.base[0]}
 
 local highlight_groups = {
 	-- text analysis
-  Normal = {fg = orh.base[0]},
+  -- Normal = {fg = orh.base[0]},
 	Comment = {fg = orh.base[3], style = 'italic'},
 	NonText = {fg = orh.base[5]},
 	EndOfBuffer = 'NonText',
