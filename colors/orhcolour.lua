@@ -1,37 +1,35 @@
+vim.cmd 'highlight clear'
+vim.cmd 'syntax reset'
 vim.g.colors_name = 'orhcolour'
 
 local orh = {}
-orh.base = {
-  [0] = {'#F7F3ED', 203, red},
-  [1] = {'#E8DFD5', 203, red},
-  [2] = {'#A38F77', 203, red},
-  [3] = {'#695C4F', 203, red},
-  [4] = {'#5C5249', 203, red},
-  [5] = {'#4A433D', 203, red},
-  [6] = {'#36322F', 203, red},
+ orh.base = {
+   [0] = '#f7f3ed',
+   [1] = '#e8dfd5',
+   [2] = '#a38f77',
+   [3] = '#695c4f',
+   [4] = '#5c5249',
+   [5] = '#4a433d',
+   [6] = '#36322f',
+ }
+ orh.blush = {
+   [0] = '#e3d586',
+   [1] = '#e0ab6e',
+   [2] = '#de705f',
+ }
+ orh.sky = {
+   [0] = '#a8b891',
+   [1] = '#5b785c',
+   [2] = '#b6d9de',
+   [3] = '#7baec7',
+   [4] = '#4e648a',
+   [5] = '#b0718a',
 }
-orh.blush = {
-  [0] = {'#E3D586', 203, red},
-  [1] = {'#E0AB6E', 203, red},
-  [2] = {'#DE705F', 203, red},
-}
-orh.sky = {
-  [0] = {'#A8B891', 203, red},
-  [1] = {'#5B785C', 203, red},
-  [2] = {'#B6D9DE', 203, red},
-  [3] = {'#7BAEC7', 203, red},
-  [4] = {'#4E648A', 203, red},
-  [5] = {'#B0718A', 203, red},
-}
-
-local highlight_group_normal = {fg = orh.base[0]}
-
--- This is where the rest of your highlights should go.
 
 local highlight_groups = {
 	-- text analysis
-  -- Normal = {fg = orh.base[0]},
-	Comment = {fg = orh.base[3], style = 'italic'},
+  Normal = {fg = orh.base[0]},
+	Comment = {fg = orh.base[3], italic = true},
 	NonText = {fg = orh.base[5]},
 	EndOfBuffer = 'NonText',
 	Whitespace  = 'NonText',
@@ -50,44 +48,44 @@ local highlight_groups = {
 
 	-- syntax
 	Statement   = {fg = orh.blush[1]},
-	Conditional = {fg = orh.blush[1], style = 'italic'},
-	Repeat   = {fg = orh.blush[1], style = 'italic'},
-	Label    = {fg = orh.blush[2], style = 'bold'},
-	Operator = {fg = orh.blush[2], style = 'bold'},
+	Conditional = {fg = orh.blush[1], italic = true},
+	Repeat   = {fg = orh.blush[1], italic = true},
+	Label    = {fg = orh.blush[2], bold = true},
+	Operator = {fg = orh.blush[2], bold = true},
 	Keyword  = {fg = orh.blush[1]},
-	Exception = {fg = orh.blush[2], style = 'bold'},
+	Exception = {fg = orh.blush[2], bold = true},
 	Noise = 'Delimiter',
 
 	-- metatextual info
 	PreProc = {fg = orh.sky[0]},
-	Include = {fg = orh.sky[0], style = 'nocombine'},
-	Define = {fg = orh.blush[1], style = 'nocombine'},
-	Macro  = {fg = orh.blush[1], style = 'italic'},
-	PreCondit = {fg = orh.sky[0], style = 'italic'},
+	Include = {fg = orh.sky[0], nocombine = true},
+	Define = {fg = orh.blush[1], nocombine = true},
+	Macro  = {fg = orh.blush[1], italic = true},
+	PreCondit = {fg = orh.sky[0], italic = true},
 
 	-- semantics
 	Type         = {fg = orh.sky[4]},
-	StorageClass = {fg = orh.sky[4], style = 'bold'},
-	Structure = {fg = orh.sky[4], style = 'bold'},
-	Typedef = {fg = orh.sky[4], style = 'italic'},
+	StorageClass = {fg = orh.sky[4], bold = true},
+	Structure = {fg = orh.sky[4], bold = true},
+	Typedef = {fg = orh.sky[4], italic = true},
 
 	-- edge cases
-	Special = {fg = orh.sky[5], style = 'bold'},
-	SpecialChar = {fg = orh.sky[5], style = 'italic'},
+	Special = {fg = orh.sky[5], bold = true},
+	SpecialChar = {fg = orh.sky[5], italic = true},
 	SpecialKey = 'Character',
 	Tag = 'Underlined',
 	Delimiter = {fg = orh.base[1]},
-	SpecialComment = {fg = orh.base[4], style = {'bold', 'nocombine'}},
+	-- SpecialComment = {fg = orh.base[4], style = {'bold', 'nocombine'}},
 	Debug = 'WarningMsg',
 
 	-- help
-	Underlined = {fg = orh.sky[3], style = 'underline'},
+	Underlined = {fg = orh.sky[3], underline = true},
 	Ignore = {fg = orh.base[3]},
-	Error = {fg = orh.base[0], bg = orh.blush[2], style = 'bold'},
-	Todo = {fg = black, bg = orh.blush[0], style = 'bold'},
-	Hint = {fg = black, bg = orh.sky[0], style = 'bold'},
-	Info = {fg = black, bg = orh.sky[2], style = 'bold'},
-	Warning = {fg = black, bg = orh.blush[1], style = 'bold'},
+	Error = {fg = orh.base[0], bg = orh.blush[2], bold = true},
+	Todo = {fg = black, bg = orh.blush[0], bold = true},
+	Hint = {fg = black, bg = orh.sky[0], bold = true},
+	Info = {fg = black, bg = orh.sky[2], bold = true},
+	Warning = {fg = black, bg = orh.blush[1], bold = true},
 
 	--- editor ui
 	-- status line
@@ -101,7 +99,7 @@ local highlight_groups = {
 	TabLine = function(self) return {fg = orh.base[0], bg = self.StatusLine.bg} end,
 	TabLineFill = function(self) return {fg = self.TabLine.bg, bg = orh.base[6]} end,
 	TabLineSel = function(self) return {fg = self.TabLine.fg, bg = orh.base[6]} end,
-	Title = {style = 'bold'},
+	Title = {bold = true},
 	VertSplit = {fg = orh.base[1]},
 
 	-- conditional line highlighting
@@ -112,7 +110,7 @@ local highlight_groups = {
 	debugPC = 'ColorColumn',
 	LineNr  = {fg = orh.base[3]},
 	QuickFixLine = function(self) return {bg = self.StatusLine.bg} end,
-	Visual    = {style = 'inverse'},
+	Visual    = {reverse = true},
 	VisualNOS = {bg = orh.base[4]},
 
 	-- popup menu
@@ -123,8 +121,8 @@ local highlight_groups = {
 	WildMenu = 'PmenuSel',
 
 	-- folds
-	FoldColumn = {bg = orh.base[5], style = 'bold'},
-	Folded = {fg = orh.base[6],  bg = orh.sky[5], style = 'italic'},
+	FoldColumn = {bg = orh.base[5], bold = true},
+	Folded = {fg = orh.base[6],  bg = orh.sky[5], italic = true},
 
 	-- diffs
 	DiffAdd    = {fg = orh.base[6], bg = orh.sky[1]},
@@ -133,27 +131,27 @@ local highlight_groups = {
 	DiffText   = function(self) return {fg = self.DiffAdd.fg, bg = orh.blush[0]} end,
 
 	-- searching
-	IncSearch  = {style = 'inverse'},
-	MatchParen = {fg = orh.sky[0], style = {'bold', 'underline'}},
-	Search = {style = {'underline', color = orh.base[0]}},
+	IncSearch  = {reverse = true},
+	-- MatchParen = {fg = orh.sky[0], style = {'bold', 'underline'}},
+	-- Search = {style = {'underline', color = orh.base[0]}},
 
 	-- spelling
-	SpellBad   = {style = {'undercurl', color = orh.blush[2]}},
-	SpellCap   = {style = {'undercurl', color = orh.blush[0]}},
-	SpellLocal = {style = {'undercurl', color = orh.sky[0]}},
-	SpellRare  = {style = {'undercurl', color = orh.blush[1]}},
+	-- SpellBad   = {style = {'undercurl', color = orh.blush[2]}},
+	-- SpellCap   = {style = {'undercurl', color = orh.blush[0]}},
+	-- SpellLocal = {style = {'undercurl', color = orh.sky[0]}},
+	-- SpellRare  = {style = {'undercurl', color = orh.blush[1]}},
 
 	-- conditional column highlighting
-	ColorColumn = {style = 'inverse'},
+	ColorColumn = {reverse = true},
 	SignColumn  = {},
 
 	-- messages
-	ErrorMsg = {fg = orh.blush[2], style = 'bold'},
-	HintMsg  = {fg = orh.sky[0], style = 'italic'},
-	InfoMsg  = {fg = orh.sky[2], style = 'italic'},
+	ErrorMsg = {fg = orh.blush[2], bold = true},
+	HintMsg  = {fg = orh.sky[0], italic = true},
+	InfoMsg  = {fg = orh.sky[2], italic = true},
 	ModeMsg  = {fg = orh.blush[0]},
-	WarningMsg = {fg = orh.blush[1], style = 'bold'},
-	Question   = {fg = orh.blush[1], style = 'underline'},
+	WarningMsg = {fg = orh.blush[1], bold = true},
+	Question   = {fg = orh.blush[1], underline = true},
 
 	--lsp / diagnostics
 	DiagnosticError = 'Error',
@@ -172,10 +170,10 @@ local highlight_groups = {
 	DiagnosticFloatingInfo = 'InfoMsg',
 	DiagnosticSignInfo = 'DiagnosticFloatingInfo',
 
-	DiagnosticUnderlineError = {style = {'undercurl', color = orh.blush[2]}},
-	DiagnosticUnderlineHint  = {style = {'undercurl', color = orh.sky[0]}},
-	DiagnosticUnderlineInfo  = {style = {'undercurl', color = orh.sky[2]}},
-	DiagnosticUnderlineWarn = {style = {'undercurl', color = orh.blush[1]}},
+	-- DiagnosticUnderlineError = {style = {'undercurl', color = orh.blush[2]}},
+	-- DiagnosticUnderlineHint  = {style = {'undercurl', color = orh.sky[0]}},
+	-- DiagnosticUnderlineInfo  = {style = {'undercurl', color = orh.sky[2]}},
+	-- DiagnosticUnderlineWarn = {style = {'undercurl', color = orh.blush[1]}},
 
 	LspDiagnosticsDefaultError = 'DiagnosticError',
 	LspDiagnosticsFloatingError = 'DiagnosticFloatingError',
@@ -199,12 +197,12 @@ local highlight_groups = {
 	LspDiagnosticsUnderlineWarning = 'DiagnosticUnderlineWarn',
 
 	-- cursor
-	Cursor   = {style = 'inverse'},
+	Cursor   = {reverse = true},
 	CursorIM = 'Cursor',
 	CursorColumn = {bg = orh.base[4]},
 
 	-- misc
-	Directory = {fg = orh.sky[0], style = 'bold'},
+	Directory = {fg = orh.sky[0], bold = true},
 
   -- # plugins
   -- git
@@ -236,7 +234,7 @@ local highlight_groups = {
 
 	-- html
 	htmlArg    = 'Label',
-	htmlBold   = {fg = orh.base[0], style = 'bold'},
+	htmlBold   = {fg = orh.base[0], bold = true},
 	htmlTitle  = 'htmlBold',
 	htmlEndTag = 'htmlTag',
 	htmlH1 = 'markdownH1',
@@ -245,7 +243,7 @@ local highlight_groups = {
 	htmlH4 = 'markdownH4',
 	htmlH5 = 'markdownH5',
 	htmlH6 = 'markdownH6',
-	htmlItalic  = {style = 'italic'},
+	htmlItalic  = {italic = true},
 	htmlSpecialTagName = 'Keyword',
 	htmlTag  = 'Special',
 	htmlTagN = 'Typedef',
@@ -271,18 +269,18 @@ local highlight_groups = {
 	luaSpecialValue = 'Function',
 	luaStringLongTag = function(self)
 		local delimiter = self.Delimiter
-		return {bg = delimiter.bg, fg = delimiter.fg, style = 'italic'}
+		return {bg = delimiter.bg, fg = delimiter.fg, italic = true}
 	end,
 
   -- markdown
 	markdownCode = 'mkdCode',
 	markdownCodeDelimiter = 'mkdCodeDelimiter',
-	markdownH1 = {fg = orh.blush[2], style = 'bold'},
-	markdownH2 = {fg = orh.blush[1], style = 'bold'},
-	markdownH3 = {fg = orh.blush[0], style = 'bold'},
-	markdownH4 = {fg = orh.sky[0], style = 'bold'},
-	markdownH5 = {fg = orh.sky[2], style = 'bold'},
-	markdownH6 = {fg = orh.sky[4], style = 'bold'},
+	markdownH1 = {fg = orh.blush[2], bold = true},
+	markdownH2 = {fg = orh.blush[1], bold = true},
+	markdownH3 = {fg = orh.blush[0], bold = true},
+	markdownH4 = {fg = orh.sky[0], bold = true},
+	markdownH5 = {fg = orh.sky[2], bold = true},
+	markdownH6 = {fg = orh.sky[4], bold = true},
 	markdownLinkDelimiter = 'mkdDelimiter',
 	markdownLinkText = 'mkdLink',
 	markdownLinkTextDelimiter = 'markdownLinkDelimiter',
@@ -299,7 +297,7 @@ local highlight_groups = {
 	mkdLineBreak = 'NonText',
 	mkdLink = 'Underlined',
 	mkdListItem  = 'Special',
-	mkdRule = function(self) return {fg = self.Ignore.fg, style = {'underline', color = self.Delimiter.fg}} end,
+	-- mkdRule = function(self) return {fg = self.Ignore.fg, style = {'underline', color = self.Delimiter.fg}} end,
 	mkdURL = 'htmlString',
 
   -- python
@@ -383,26 +381,28 @@ local highlight_groups = {
 	yamlKey = 'Label',
 }
 
-local terminal_colors = {
-	[1]  = orh.base[6],
-	[2]  = orh.sky[5],
-	[3]  = orh.sky[1],
-	[4]  = orh.blush[1],
-	[5]  = orh.sky[4],
-	[6]  = orh.base[4],
-	[7]  = orh.base[2],
-	[8]  = orh.base[1],
-	[9]  = orh.base[5],
-	[10] = orh.blush[2],
-	[11] = orh.sky[0],
-	[12] = orh.blush[0],
-	[13] = orh.sky[3],
-	[14] = orh.base[3],
-	[15] = orh.sky[2],
-	[16] = orh.base[0]
-}
-require(vim.g.colors_name)(
-	highlight_group_normal,
-	highlight_groups,
-	terminal_colors
-)
+for name, attrs in pairs(highlight_groups) do
+  if type(attrs) == 'table' then
+    vim.api.nvim_set_hl(0, name, attrs)
+  elseif type(attrs) == 'string' then
+    vim.api.nvim_set_hl(0, name, { link = attrs })
+  end
+end
+
+-- See https://github.com/neovim/neovim/pull/7406
+vim.g.terminal_color_0  = orh.base[6]
+vim.g.terminal_color_1  = orh.sky[5]
+vim.g.terminal_color_2  = orh.sky[1]
+vim.g.terminal_color_3  = orh.blush[1]
+vim.g.terminal_color_4  = orh.sky[4]
+vim.g.terminal_color_5  = orh.base[4]
+vim.g.terminal_color_6  = orh.base[2]
+vim.g.terminal_color_7  = orh.base[1]
+vim.g.terminal_color_8  = orh.base[5]
+vim.g.terminal_color_9  = orh.blush[2]
+vim.g.terminal_color_10 = orh.sky[0]
+vim.g.terminal_color_11 = orh.blush[0]
+vim.g.terminal_color_12 = orh.sky[3]
+vim.g.terminal_color_13 = orh.base[3]
+vim.g.terminal_color_14 = orh.sky[2]
+vim.g.terminal_color_15 = orh.base[0]
