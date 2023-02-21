@@ -53,8 +53,8 @@ local highlight_groups = {
   Normal = {fg = orh.base[0]},
 	Comment = {fg = orh.base[3], style = 'italic'},
 	NonText = {fg = orh.base[5]},
-	EndOfBuffer = 'NonText',
-	Whitespace  = 'NonText',
+	-- EndOfBuffer = 'NonText',
+	-- Whitespace  = 'NonText',
 
 	-- literals
 	Constant = {fg = orh.sky[2]},
@@ -62,7 +62,7 @@ local highlight_groups = {
 	Character = {fg = orh.sky[0]},
 	Number  = {fg = orh.sky[3]},
 	Boolean = {fg = orh.sky[3]},
-	Float   = 'Number',
+	-- Float   = 'Number',
 
 	-- identifiers
 	Identifier = Normal,
@@ -76,7 +76,7 @@ local highlight_groups = {
 	Operator = {fg = orh.blush[2], style = 'bold'},
 	Keyword  = {fg = orh.blush[1]},
 	Exception = {fg = orh.blush[2], style = 'bold'},
-	Noise = 'Delimiter',
+	-- Noise = 'Delimiter',
 
 	-- metatextual info
 	PreProc = {fg = orh.sky[0]},
@@ -94,11 +94,11 @@ local highlight_groups = {
 	-- edge cases
 	Special = {fg = orh.sky[5], style = 'bold'},
 	SpecialChar = {fg = orh.sky[5], style = 'italic'},
-	SpecialKey = 'Character',
-	Tag = 'Underlined',
+	-- SpecialKey = 'Character',
+	-- Tag = 'Underlined',
 	Delimiter = {fg = orh.base[1]},
 	SpecialComment = {fg = orh.base[4], style = {'bold', 'nocombine'}},
-	Debug = 'WarningMsg',
+	-- Debug = 'WarningMsg',
 
 	-- help
 	Underlined = {fg = orh.sky[3], style = 'underline'},
@@ -113,8 +113,8 @@ local highlight_groups = {
 	-- status line
 	StatusLine = {fg = orh.base[1], bg = orh.base[5]},
 	StatusLineNC = function(self) return {fg = orh.base[2], bg = self.StatusLine.bg} end,
-	StatusLineTerm = 'StatusLine',
-	StatusLineTermNC = 'StatusLineNC',
+	-- StatusLineTerm = 'StatusLine',
+	-- StatusLineTermNC = 'StatusLineNC',
 
 	-- separators
 	FloatBorder = {fg = orh.base[2]},
@@ -125,11 +125,11 @@ local highlight_groups = {
 	VertSplit = {fg = orh.base[1]},
 
 	-- conditional line highlighting
-	Conceal = 'NonText',
+	-- Conceal = 'NonText',
 	CursorLine   = {bg = orh.base[4]},
 	CursorLineNr = function(self) return {fg = orh.sky[5], bg = self.LineNr.bg} end,
-	debugBreakpoint = 'ErrorMsg',
-	debugPC = 'ColorColumn',
+	-- debugBreakpoint = 'ErrorMsg',
+	-- debugPC = 'ColorColumn',
 	LineNr  = {fg = orh.base[3]},
 	QuickFixLine = function(self) return {bg = self.StatusLine.bg} end,
 	Visual    = {style = 'inverse'},
@@ -140,7 +140,7 @@ local highlight_groups = {
 	PmenuSbar = {bg = orh.base[5]},
 	PmenuSel  = {fg = orh.base[6], bg = orh.base[2]},
 	PmenuThumb = {bg = orh.base[0]},
-	WildMenu = 'PmenuSel',
+	-- WildMenu = 'PmenuSel',
 
 	-- folds
 	FoldColumn = {bg = orh.base[5], style = 'bold'},
@@ -175,6 +175,7 @@ local highlight_groups = {
 	WarningMsg = {fg = orh.blush[1], style = 'bold'},
 	Question   = {fg = orh.blush[1], style = 'underline'},
 
+  --[[
 	--lsp / diagnostics
 	DiagnosticError = 'Error',
 	DiagnosticFloatingError = 'ErrorMsg',
@@ -191,42 +192,44 @@ local highlight_groups = {
 	DiagnosticInfo = 'Info',
 	DiagnosticFloatingInfo = 'InfoMsg',
 	DiagnosticSignInfo = 'DiagnosticFloatingInfo',
+  --]]
 
 	DiagnosticUnderlineError = {style = {'undercurl', color = orh.blush[2]}},
 	DiagnosticUnderlineHint  = {style = {'undercurl', color = orh.sky[0]}},
 	DiagnosticUnderlineInfo  = {style = {'undercurl', color = orh.sky[2]}},
 	DiagnosticUnderlineWarn = {style = {'undercurl', color = orh.blush[1]}},
 
-	LspDiagnosticsDefaultError = 'DiagnosticError',
-	LspDiagnosticsFloatingError = 'DiagnosticFloatingError',
-	LspDiagnosticsSignError = 'DiagnosticSignError',
+	-- LspDiagnosticsDefaultError = 'DiagnosticError',
+	-- LspDiagnosticsFloatingError = 'DiagnosticFloatingError',
+	-- LspDiagnosticsSignError = 'DiagnosticSignError',
 
-	LspDiagnosticsDefaultWarning = 'DiagnosticWarn',
-	LspDiagnosticsFloatingWarning = 'DiagnosticFloatingWarn',
-	LspDiagnosticsSignWarning = 'DiagnosticSignWarn',
+	-- LspDiagnosticsDefaultWarning = 'DiagnosticWarn',
+	-- LspDiagnosticsFloatingWarning = 'DiagnosticFloatingWarn',
+	-- LspDiagnosticsSignWarning = 'DiagnosticSignWarn',
 
-	LspDiagnosticsDefaultHint = 'DiagnosticHint',
-	LspDiagnosticsFloatingHint = 'DiagnosticFloatingHint',
-	LspDiagnosticsSignHint = 'DiagnosticSignHint',
+	-- LspDiagnosticsDefaultHint = 'DiagnosticHint',
+	-- LspDiagnosticsFloatingHint = 'DiagnosticFloatingHint',
+	-- LspDiagnosticsSignHint = 'DiagnosticSignHint',
 
-	LspDiagnosticsDefaultInformation = 'DiagnosticInfo',
-	LspDiagnosticsFloatingInformation = 'DiagnosticFloatingInfo',
-	LspDiagnosticsSignInformation = 'DiagnosticSignInfo',
+	-- LspDiagnosticsDefaultInformation = 'DiagnosticInfo',
+	-- LspDiagnosticsFloatingInformation = 'DiagnosticFloatingInfo',
+	-- LspDiagnosticsSignInformation = 'DiagnosticSignInfo',
 
-	LspDiagnosticsUnderlineError = 'DiagnosticUnderlineError',
-	LspDiagnosticsUnderlineHint  = 'DiagnosticUnderlineHint',
-	LspDiagnosticsUnderlineInfo  = 'DiagnosticUnderlineInfo',
-	LspDiagnosticsUnderlineWarning = 'DiagnosticUnderlineWarn',
+	-- LspDiagnosticsUnderlineError = 'DiagnosticUnderlineError',
+	-- LspDiagnosticsUnderlineHint  = 'DiagnosticUnderlineHint',
+	-- LspDiagnosticsUnderlineInfo  = 'DiagnosticUnderlineInfo',
+	-- LspDiagnosticsUnderlineWarning = 'DiagnosticUnderlineWarn',
 
 	-- cursor
 	Cursor   = {style = 'inverse'},
-	CursorIM = 'Cursor',
+	-- CursorIM = 'Cursor',
 	CursorColumn = {bg = orh.base[4]},
 
 	-- misc
 	Directory = {fg = orh.sky[0], style = 'bold'},
 }
 
+--[[
 local highlight_languages = {
   -- git
 	diffAdded = 'DiffAdd',
@@ -403,6 +406,7 @@ local highlight_languages = {
 	yamlInline = 'Delimiter',
 	yamlKey = 'Label',
 }
+--]]
 
 local async_load_plugin
 
@@ -414,7 +418,7 @@ end
 
 async_load_plugin = vim.loop.new_async(vim.schedule_wrap(function()
   orh.terminal_color()
-  set_hl(highlight_language)
+  -- set_hl(highlight_language)
   async_load_plugin:close()
 end))
 
