@@ -1,437 +1,182 @@
--- colours
+--[[ NOTHING INSIDE THIS FILE NEEDS TO BE EDITED BY THE USER. ]]
 
-local orh = {
-  test = 'test'
-}
+--- @class Highlite.Definition
+--- @field bg? string|table the background color
+--- @field blend? number the transparency value
+--- @field dark? Highlite.Definition special highlight definition for when `&bg` is 'dark'
+--- @field fg? string|table the foreground color
+--- @field light? Highlite.Definition special highlight definition for when `&bg` is 'light'
+--- @field style? Highlite.Style special appearance alterations
 
-orh.base = {
-  [0] = '#f7f3ed',
-  [1] = '#e8dfd5',
-  [2] = '#a38f77',
-  [3] = '#695c4f',
-  [4] = '#5c5249',
-  [5] = '#4a433d',
-  [6] = '#36322f',
-}
-orh.blush = {
-  [0] = '#e3d586',
-  [1] = '#e0ab6e',
-  [2] = '#de705f',
-}
-orh.sky = {
-  [0] = '#a8b891',
-  [1] = '#5b785c',
-  [2] = '#b6d9de',
-  [3] = '#7baec7',
-  [4] = '#4e648a',
-  [5] = '#b0718a',
-}
+--- @class Highlite.Style
+--- @field color string|table color of underline or undercurl
 
--- terminal colours
+--[[/* Vars */]]
 
-function orh.terminal_color()
-  vim.g.terminal_color_0  = orh.base[6]
-  vim.g.terminal_color_1  = orh.sky[5]
-  vim.g.terminal_color_2  = orh.sky[1]
-  vim.g.terminal_color_3  = orh.blush[1]
-  vim.g.terminal_color_4  = orh.sky[4]
-  vim.g.terminal_color_5  = orh.base[4]
-  vim.g.terminal_color_6  = orh.base[2]
-  vim.g.terminal_color_7  = orh.base[1]
-  vim.g.terminal_color_8  = orh.base[5]
-  vim.g.terminal_color_9  = orh.blush[2]
-  vim.g.terminal_color_10 = orh.sky[0]
-  vim.g.terminal_color_11 = orh.blush[0]
-  vim.g.terminal_color_12 = orh.sky[3]
-  vim.g.terminal_color_13 = orh.base[3]
-  vim.g.terminal_color_14 = orh.sky[2]
-  vim.g.terminal_color_15 = orh.base[0]
+--- Which set of colors to use.
+local _USE_256 = tonumber(vim.go.t_Co) > 255 or string.find(vim.env.TERM, '256')
+
+--- Which index to use for `cterm` highlights.
+local _PALETTE_CTERM = _USE_256 and 2 or 3
+
+--- Which index to use for `gui` highlights.
+local _PALETTE_HEX  = 1
+
+--- The `string` type.
+local _TYPE_STRING = type ''
+
+--- The `table` type.
+local _TYPE_TABLE  = type {}
+
+--[[/* Helper Functions */]]
+
+--- @param color? string|table the color name or definition
+--- @param index number
+--- @return nil|number|string color_value a hex, 16-bit, or ANSI color. "NONE" by default
+local function get(color, index) -- {{{ †
+	if color and color[index] then
+		return color[index]
+	elseif type(color) == _TYPE_STRING then
+		--- @diagnostic disable-next-line:return-type-mismatch (we test for `color == string`, which is a subtype of `(number|string)?`
+		return color
+	end
+end --}}} ‡
+
+--- @param rgb string some string of RGB colors.
+--- @return string hex
+local function tohex(rgb) return string.format('#%06x', rgb) end
+
+--- Create a metatable which prioritizes entries in the `&bg` index of `definition`
+--- @param definition Highlite.Definition the definition of the highlight group
+--- @return table
+local function use_background_with(definition)
+	return setmetatable(definition[vim.go.background], {__index = definition})
 end
 
-local highlight_groups = {
-	-- text analysis
-  Normal = {fg = orh.base[0]},
-	Comment = {fg = orh.base[3], italic = true},
-	NonText = {fg = orh.base[5]},
-	-- EndOfBuffer = 'NonText',
-	-- Whitespace  = 'NonText',
+--[[/* Module */]]
 
-	-- literals
-	Constant = {fg = orh.sky[2]},
-	String = {fg = orh.sky[1]},
-	Character = {fg = orh.sky[0]},
-	Number  = {fg = orh.sky[3]},
-	Boolean = {fg = orh.sky[3]},
-	-- Float   = 'Number',
+--- A Neovim plugin to create more straightforward syntax for Lua `:map`ping and `:unmap`ping.
+--- @class Highlite
+local highlite = {}
 
-	-- identifiers
-	Identifier = Normal,
-	Function = {fg = orh.blush[0]},
+--- @param name string the name of the highlight group
+--- @return Highlite.Definition definition an nvim-highlite compliant table describing the highlight group `name`
+function highlite.group(name)
+	local no_errors, definition = pcall(vim.api.nvim_get_hl_by_name, name, vim.go.termguicolors)
 
-  --[[
-	-- syntax
-	Statement   = {fg = orh.blush[1]},
-	Conditional = {fg = orh.blush[1], style = 'italic'},
-	Repeat   = {fg = orh.blush[1], style = 'italic'},
-	Label    = {fg = orh.blush[2], style = 'bold'},
-	Operator = {fg = orh.blush[2], style = 'bold'},
-	Keyword  = {fg = orh.blush[1]},
-	Exception = {fg = orh.blush[2], style = 'bold'},
-	-- Noise = 'Delimiter',
+	if not no_errors then definition = {} end
 
-	-- metatextual info
-	PreProc = {fg = orh.sky[0]},
-	Include = {fg = orh.sky[0], style = 'nocombine'},
-	Define = {fg = orh.blush[1], style = 'nocombine'},
-	Macro  = {fg = orh.blush[1], style = 'italic'},
-	PreCondit = {fg = orh.sky[0], style = 'italic'},
+	-- the style of the highlight group
+	local style = {}
+	for k, v in pairs(definition) do
+		if k == 'special' then
+			style.color = tohex(v)
+		elseif k ~= 'background' and k ~= 'blend' and k ~= 'foreground' then
+			style[#style+1] = k
+		end
+	end
 
-	-- semantics
-	Type         = {fg = orh.sky[4]},
-	StorageClass = {fg = orh.sky[4], style = 'bold'},
-	Structure = {fg = orh.sky[4], style = 'bold'},
-	Typedef = {fg = orh.sky[4], style = 'italic'},
-
-	-- edge cases
-	Special = {fg = orh.sky[5], style = 'bold'},
-	SpecialChar = {fg = orh.sky[5], style = 'italic'},
-	-- SpecialKey = 'Character',
-	-- Tag = 'Underlined',
-	Delimiter = {fg = orh.base[1]},
-	SpecialComment = {fg = orh.base[4], style = {'bold', 'nocombine'}},
-	-- Debug = 'WarningMsg',
-
-	-- help
-	Underlined = {fg = orh.sky[3], style = 'underline'},
-	Ignore = {fg = orh.base[3]},
-	Error = {fg = orh.base[0], bg = orh.blush[2], style = 'bold'},
-	Todo = {fg = black, bg = orh.blush[0], style = 'bold'},
-	Hint = {fg = black, bg = orh.sky[0], style = 'bold'},
-	Info = {fg = black, bg = orh.sky[2], style = 'bold'},
-	Warning = {fg = black, bg = orh.blush[1], style = 'bold'},
-
-	--- editor ui
-	-- status line
-	StatusLine = {fg = orh.base[1], bg = orh.base[5]},
-	StatusLineNC = function(self) return {fg = orh.base[2], bg = self.StatusLine.bg} end,
-	-- StatusLineTerm = 'StatusLine',
-	-- StatusLineTermNC = 'StatusLineNC',
-
-	-- separators
-	FloatBorder = {fg = orh.base[2]},
-	TabLine = function(self) return {fg = orh.base[0], bg = self.StatusLine.bg} end,
-	TabLineFill = function(self) return {fg = self.TabLine.bg, bg = orh.base[6]} end,
-	TabLineSel = function(self) return {fg = self.TabLine.fg, bg = orh.base[6]} end,
-	Title = {style = 'bold'},
-	VertSplit = {fg = orh.base[1]},
-
-	-- conditional line highlighting
-	-- Conceal = 'NonText',
-	CursorLine   = {bg = orh.base[4]},
-	CursorLineNr = function(self) return {fg = orh.sky[5], bg = self.LineNr.bg} end,
-	-- debugBreakpoint = 'ErrorMsg',
-	-- debugPC = 'ColorColumn',
-	LineNr  = {fg = orh.base[3]},
-	QuickFixLine = function(self) return {bg = self.StatusLine.bg} end,
-	Visual    = {style = 'inverse'},
-	VisualNOS = {bg = orh.base[4]},
-
-	-- popup menu
-	Pmenu = {fg = orh.base[0], bg = orh.base[4]},
-	PmenuSbar = {bg = orh.base[5]},
-	PmenuSel  = {fg = orh.base[6], bg = orh.base[2]},
-	PmenuThumb = {bg = orh.base[0]},
-	-- WildMenu = 'PmenuSel',
-
-	-- folds
-	FoldColumn = {bg = orh.base[5], style = 'bold'},
-	Folded = {fg = orh.base[6],  bg = orh.sky[5], style = 'italic'},
-
-	-- diffs
-	DiffAdd    = {fg = orh.base[6], bg = orh.sky[1]},
-	DiffChange = {},
-	DiffDelete = function(self) return {fg = self.DiffAdd.fg, bg = orh.blush[2]} end,
-	DiffText   = function(self) return {fg = self.DiffAdd.fg, bg = orh.blush[0]} end,
-
-	-- searching
-	IncSearch  = {style = 'inverse'},
-	MatchParen = {fg = orh.sky[0], style = {'bold', 'underline'}},
-	Search = {style = {'underline', color = orh.base[0]}},
-
-	-- spelling
-	SpellBad   = {style = {'undercurl', color = orh.blush[2]}},
-	SpellCap   = {style = {'undercurl', color = orh.blush[0]}},
-	SpellLocal = {style = {'undercurl', color = orh.sky[0]}},
-	SpellRare  = {style = {'undercurl', color = orh.blush[1]}},
-
-	-- conditional column highlighting
-	ColorColumn = {style = 'inverse'},
-	SignColumn  = {},
-
-	-- messages
-	ErrorMsg = {fg = orh.blush[2], style = 'bold'},
-	HintMsg  = {fg = orh.sky[0], style = 'italic'},
-	InfoMsg  = {fg = orh.sky[2], style = 'italic'},
-	ModeMsg  = {fg = orh.blush[0]},
-	WarningMsg = {fg = orh.blush[1], style = 'bold'},
-	Question   = {fg = orh.blush[1], style = 'underline'},
-
-	--lsp / diagnostics
-	-- DiagnosticError = 'Error',
-	-- DiagnosticFloatingError = 'ErrorMsg',
-	-- DiagnosticSignError = 'DiagnosticFloatingError',
-
-	-- DiagnosticWarn = 'Warning',
-	-- DiagnosticFloatingWarn = 'WarningMsg',
-	-- DiagnosticSignWarn = 'DiagnosticFloatingWarn',
-
-	-- DiagnosticHint = 'Hint',
-	-- DiagnosticFloatingHint = 'HintMsg',
-	-- DiagnosticSignHint = 'DiagnosticFloatingHint',
-
-	-- DiagnosticInfo = 'Info',
-	-- DiagnosticFloatingInfo = 'InfoMsg',
-	-- DiagnosticSignInfo = 'DiagnosticFloatingInfo',
-
-	DiagnosticUnderlineError = {style = {'undercurl', color = orh.blush[2]}},
-	DiagnosticUnderlineHint  = {style = {'undercurl', color = orh.sky[0]}},
-	DiagnosticUnderlineInfo  = {style = {'undercurl', color = orh.sky[2]}},
-	DiagnosticUnderlineWarn = {style = {'undercurl', color = orh.blush[1]}},
-
-	-- LspDiagnosticsDefaultError = 'DiagnosticError',
-	-- LspDiagnosticsFloatingError = 'DiagnosticFloatingError',
-	-- LspDiagnosticsSignError = 'DiagnosticSignError',
-
-	-- LspDiagnosticsDefaultWarning = 'DiagnosticWarn',
-	-- LspDiagnosticsFloatingWarning = 'DiagnosticFloatingWarn',
-	-- LspDiagnosticsSignWarning = 'DiagnosticSignWarn',
-
-	-- LspDiagnosticsDefaultHint = 'DiagnosticHint',
-	-- LspDiagnosticsFloatingHint = 'DiagnosticFloatingHint',
-	-- LspDiagnosticsSignHint = 'DiagnosticSignHint',
-
-	-- LspDiagnosticsDefaultInformation = 'DiagnosticInfo',
-	-- LspDiagnosticsFloatingInformation = 'DiagnosticFloatingInfo',
-	-- LspDiagnosticsSignInformation = 'DiagnosticSignInfo',
-
-	-- LspDiagnosticsUnderlineError = 'DiagnosticUnderlineError',
-	-- LspDiagnosticsUnderlineHint  = 'DiagnosticUnderlineHint',
-	-- LspDiagnosticsUnderlineInfo  = 'DiagnosticUnderlineInfo',
-	-- LspDiagnosticsUnderlineWarning = 'DiagnosticUnderlineWarn',
-
-	-- cursor
-	Cursor   = {style = 'inverse'},
-	-- CursorIM = 'Cursor',
-	CursorColumn = {bg = orh.base[4]},
-
-	-- misc
-	Directory = {fg = orh.sky[0], style = 'bold'},
---]]
-}
-
---[[
-local highlight_languages = {
-  -- git
-	diffAdded = 'DiffAdd',
-	diffRemoved = 'DiffDelete',
-	gitcommitHeader = 'SpecialComment',
-	gitcommitDiscardedFile = 'gitcommitSelectedFile',
-	gitcommitOverFlow = 'Error',
-	gitcommitSelectedFile = 'Directory',
-	gitcommitSummary  = 'Title',
-	gitcommitUntrackedFile = 'gitcommitSelectedFile',
-	gitconfigAssignment = 'String',
-	gitconfigEscape = 'SpecialChar',
-	gitconfigNone  = 'Operator',
-	gitconfigSection = 'Structure',
-	gitconfigVariable = 'Label',
-	-- gitreorh.baseBreak = 'Keyword',
-	-- gitreorh.baseCommit = 'Tag',
-	-- gitreorh.baseDrop = 'Exception',
-	-- gitreorh.baseEdit = 'Define',
-	-- gitreorh.baseExec = 'PreProc',
-	-- gitreorh.baseFixup = 'gitreorh.baseSquash',
-	-- gitreorh.baseMerge = 'PreProc',
-	-- gitreorh.basePick  = 'Include',
-	-- gitreorh.baseReset = 'gitreorh.baseLabel',
-	-- gitreorh.baseReword  = 'gitreorh.basePick',
-	-- gitreorh.baseSquash  = 'Macro',
-	-- gitreorh.baseSummary = 'Title',
-
-	-- html
-	htmlArg    = 'Label',
-	htmlBold   = {fg = orh.base[0], style = 'bold'},
-	htmlTitle  = 'htmlBold',
-	htmlEndTag = 'htmlTag',
-	htmlH1 = 'markdownH1',
-	htmlH2 = 'markdownH2',
-	htmlH3 = 'markdownH3',
-	htmlH4 = 'markdownH4',
-	htmlH5 = 'markdownH5',
-	htmlH6 = 'markdownH6',
-	htmlItalic  = {style = 'italic'},
-	htmlSpecialTagName = 'Keyword',
-	htmlTag  = 'Special',
-	htmlTagN = 'Typedef',
-	htmlTagName = 'Type',
-
-  -- lua
-	luaBraces   = 'Structure',
-	luaBrackets = 'Delimiter',
-	luaBuiltin  = 'Keyword',
-	luaComma    = 'Delimiter',
-	luaFuncArgName = 'Identifier',
-	luaFuncCall = 'Function',
-	luaFuncId   = 'luaNoise',
-	luaFuncKeyword = 'Type',
-	luaFuncName   = 'Function',
-	luaFuncParens = 'Delimiter',
-	luaFuncTable  = 'Structure',
-	luaIn     = 'luaRepeat',
-	luaLocal  = 'Type',
-	luaNoise  = 'Delimiter',
-	luaParens = 'Delimiter',
-	luaSpecialTable = 'Structure',
-	luaSpecialValue = 'Function',
-	luaStringLongTag = function(self)
-		local delimiter = self.Delimiter
-		return {bg = delimiter.bg, fg = delimiter.fg, style = 'italic'}
-	end,
-
-  -- markdown
-	markdownCode = 'mkdCode',
-	markdownCodeDelimiter = 'mkdCodeDelimiter',
-	markdownH1 = {fg = orh.blush[2], style = 'bold'},
-	markdownH2 = {fg = orh.blush[1], style = 'bold'},
-	markdownH3 = {fg = orh.blush[0], style = 'bold'},
-	markdownH4 = {fg = orh.sky[0], style = 'bold'},
-	markdownH5 = {fg = orh.sky[2], style = 'bold'},
-	markdownH6 = {fg = orh.sky[4], style = 'bold'},
-	markdownLinkDelimiter = 'mkdDelimiter',
-	markdownLinkText = 'mkdLink',
-	markdownLinkTextDelimiter = 'markdownLinkDelimiter',
-	markdownUrl = 'mkdURL',
-	mkdBold = 'Ignore',
-	mkdBoldItalic = 'mkdBold',
-	mkdCode = 'Keyword',
-	mkdCodeDelimiter = 'mkdBold',
-	mkdCodeEnd = 'mkdCodeStart',
-	mkdCodeStart = 'mkdCodeDelimiter',
-	mkdDelimiter = 'Delimiter',
-	mkdHeading = 'Delimiter',
-	mkdItalic  = 'mkdBold',
-	mkdLineBreak = 'NonText',
-	mkdLink = 'Underlined',
-	mkdListItem  = 'Special',
-	mkdRule = function(self) return {fg = self.Ignore.fg, style = {'underline', color = self.Delimiter.fg}} end,
-	mkdURL = 'htmlString',
-
-  -- python
-	pythonBrackets    = 'Delimiter',
-	pythonBuiltinFunc = 'Operator',
-	pythonBuiltinObj  = 'Type',
-	pythonBuiltinType = 'Type',
-	pythonClass       = 'Structure',
-	pythonClassParameters = 'pythonParameters',
-	pythonDecorator  = 'PreProc',
-	pythonDottedName = 'Identifier',
-	pythonError     = 'Error',
-	pythonException = 'Exception',
-	pythonInclude   = 'Include',
-	pythonIndentError = 'pythonError',
-	pythonLambdaExpr  = 'pythonOperator',
-	pythonOperator = 'Operator',
-	pythonParam    = 'Identifier',
-	pythonParameters = 'Delimiter',
-	pythonSelf = 'Statement',
-	pythonSpaceError = 'pythonError',
-	pythonStatement  = 'Statement',
-
-  -- rust
-	rustAssert = 'Debug',
-	rustCharacterDelimiter = 'rustNoise',
-	rustIdentifier = 'Identifier',
-	rustStaticLifetime = 'rustStorage',
-	rustStringDelimiter = 'rustNoise',
-
-  -- shell
-	shDerefSimple = 'SpecialChar',
-	shFunctionKey = 'Function',
-	shLoop  = 'Repeat',
-	shParen = 'Delimiter',
-	shQuote = 'Delimiter',
-	shSet   = 'Statement',
-	shTestOpr = 'Debug',
-
-  -- toml
-	tomlComment = 'Comment',
-	tomlDate  = 'Special',
-	tomlFloat = 'Float',
-	tomlKey   = 'Label',
-	tomlTable = 'Structure',
-
-  -- vim script
-	vimCmdSep   = 'Delimiter',
-	vimFunction = 'Function',
-	vimFgBgAttrib = 'Constant',
-	vimHiCterm = 'Label',
-	vimHiCtermFgBg = 'vimHiCterm',
-	vimHiGroup = 'Typedef',
-	vimHiGui   = 'vimHiCterm',
-	vimHiGuiFgBg = 'vimHiGui',
-	vimHiKeyList = 'Operator',
-	vimIsCommand = 'Identifier',
-	vimOption = 'Keyword',
-	vimScriptDelim = 'Ignore',
-	vimSet = 'String',
-	vimSetEqual = 'Operator',
-	vimSetSep   = 'Delimiter',
-	vimUserFunc = 'vimFunction',
-
-  -- vim tex
-	texMathRegion = 'Number',
-	texMathSub   = 'Number',
-	texMathSuper = 'Number',
-	texMathRegionX  = 'Number',
-	texMathRegionXX = 'Number',
-
-   -- xml
-	xmlAttrib = 'htmlArg',
-	xmlEndTag = 'xmlTag',
-	xmlEqual  = 'Operator',
-	xmlTag    = 'htmlTag',
-	xmlTagName = 'htmlTagName',
-
-  -- yaml
-	yamlInline = 'Delimiter',
-	yamlKey = 'Label',
-}
---]]
-
-local async_load_plugin
-
-local set_hl = function(tbl)
-  for group, conf in pairs(tbl) do
-    vim.api.nvim_set_hl(0, group, conf)
-  end
+	return
+	{
+		fg = definition.foreground and tohex(definition.foreground),
+		bg = definition.background and tohex(definition.background),
+		blend = definition.blend,
+		style = style,
+	}
 end
 
-async_load_plugin = vim.loop.new_async(vim.schedule_wrap(function()
-  orh.terminal_color()
-  -- set_hl(highlight_language)
-  async_load_plugin:close()
-end))
+-- Generate a `:highlight` command from a group and some definition.
 
-function orh.colorscheme()
-  vim.api.nvim_command("hi clear")
+--- Generate and execute `:highlight` command from a group and some definition.
+--- @param group_name string the `{group-name}` argument for `:highlight`
+--- @param definition Highlite.Definition|string a link or an attribute map
+function highlite.highlight(group_name, definition) -- {{{ †
+	local highlight = {}
+	if type(definition) == _TYPE_STRING then -- `highlight_group` is a link to another group.
+		highlight.link = definition
+	else
+		-- Take care of special instructions for certain background colors.
+		if definition[vim.go.background] then
+			--- @diagnostic disable-next-line: param-type-mismatch (`str.dark` and `str.light` are `nil`)
+			definition = use_background_with(definition)
+		end
 
-  vim.o.background = "dark"
-  vim.o.termguicolors = true
-  vim.g.colors_name = "orhcolour"
-  set_hl(highlight_groups)
-  async_load_plugin:send()
+		highlight.bg = get(definition.bg, _PALETTE_HEX)
+		highlight.fg = get(definition.fg, _PALETTE_HEX)
+
+		highlight.ctermbg = get(definition.bg, _PALETTE_CTERM)
+		highlight.ctermfg = get(definition.fg, _PALETTE_CTERM)
+
+		highlight.blend = definition.blend
+
+		local style = definition.style
+		if type(style) == _TYPE_TABLE then
+			--- @diagnostic disable-next-line:param-type-mismatch (we check `type(style) == 'table'` right above this)
+			for _, option in ipairs(style) do highlight[option] = true end
+			--- @diagnostic disable-next-line:need-check-nil (we check `type(style) == 'table'` right above this)
+			highlight.special = get(style.color, _PALETTE_HEX)
+		elseif style then
+			highlight[style] = true
+		end
+
+		highlight.reverse = highlight.inverse
+		highlight.inverse = nil
+	end
+
+	vim.api.nvim_set_hl(0, group_name, highlight)
+end --}}} ‡
+
+--- Set `g:terminal_color_`s based on `terminal_colors`.
+--- @param terminal_colors table a list 1..16 of colors to use in the terminal
+function highlite:highlight_terminal(terminal_colors)
+	for index, color in ipairs(terminal_colors) do vim.g['terminal_color_'..(index-1)] =
+		vim.go.termguicolors and color[_PALETTE_HEX] or color[_PALETTE_CTERM]
+	end
 end
 
-orh.colorscheme()
+return setmetatable(highlite, {__call = function(self, normal, highlights, terminal_colors)
+	--- resolve highlight groups being defined by function calls.
+	--- @param tbl table the current table being indexed.
+	--- @param key string the key to resolve the value for.
+	--- @param resolve_links boolean whether to translate highlight links into full values
+	--- @returns the value at `tbl[key]`, when highlight links and embedded functions have been accounted for.
+	local function resolve(tbl, key, resolve_links)
+		local original_value = tbl[key]
+		local original_value_type = type(original_value)
 
-return orh
+		if original_value_type == 'function' then -- call and cache the result; next time, if it isn't a function this step will be skipped
+			tbl[key] = original_value(setmetatable({},
+			{
+				__index = function(_, inner_key) return resolve(tbl, inner_key, true) end
+			}))
+		elseif resolve_links and original_value_type == _TYPE_STRING and not string.find(original_value, '^#') then
+			return resolve(tbl, original_value, resolve_links)
+		end
+
+		return tbl[key]
+	end
+
+	-- save the colors_name before syntax reset
+	local color_name = vim.g.colors_name
+
+	-- If the syntax has been enabled, reset it.
+	if vim.fn.exists 'syntax_on' then vim.api.nvim_command 'syntax reset' end
+
+	-- replace the colors_name
+	vim.g.colors_name = color_name
+	color_name = nil
+
+	-- If we aren't using hex nor 256 colorsets.
+	if not (vim.go.termguicolors or _USE_256) then vim.go.t_Co = '16' end
+
+	-- Highlight the baseline.
+	self.highlight('Normal', normal)
+
+	-- Highlight everything else.
+	for group_name, _ in pairs(highlights) do
+		self.highlight(group_name, resolve(highlights, group_name, false))
+	end
+
+	-- Set the terminal highlight colors.
+	self:highlight_terminal(terminal_colors)
+end})
