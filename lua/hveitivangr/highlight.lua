@@ -7,11 +7,13 @@ hl.editor = {
   CursorLineNr = {fg = colour.eggshell, bold = true},
 
 	VertSplit = {fg = colour.umber},
+	Visual    = {fg = colour.umber, bg = colour.eggshell},
 
 	-- cursor
 	Cursor = {reverse = true},
 	CursorIM = 'Cursor',
 	CursorColumn = {bg = colour.jet},
+	SignColumn = 'CursorColumn',
 
 	-- status line
 	StatusLine = {fg = colour.eggshell, bg = colour.jet},
@@ -97,6 +99,9 @@ hl.plugins = {
 	["@type.qualifier"] = 'StorageClass',
 	["@exception"] = {fg = colour.terracotta, italic = true},
 	["@namespace"] = {fg = colour.lavender},
+	["@constructor"] = 'Delimeter',
+	["@function.call"] = 'Function',
+	["@function.builtin"] = 'Function',
 }
 
 hl.languages = {
