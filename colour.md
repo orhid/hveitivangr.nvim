@@ -1,0 +1,16 @@
+orh.00 = #f7f4e8 -- white
+orh.01 = #f6e9b6 -- blond
+orh.02 = #f5da8a -- jasmine
+orh.03 = #e7b76e -- sunray
+orh.04 = #d2796a -- terracotta
+orh.05 = #af7480 -- lavender
+orh.06 = #5f8eb4 -- frost
+orh.07 = #7db3ca -- sky
+orh.08 = #b3d7db -- powder
+orh.09 = #b2d19e -- celadon
+orh.10 = #cad9b5 -- tea
+orh.11 = #ece5d0 -- eggshell
+orh.12 = #bcad8a -- web
+orh.13 = #907f64 -- shawod
+orh.14 = #675d51 -- umber
+orh.15 = #423d38 -- jet
