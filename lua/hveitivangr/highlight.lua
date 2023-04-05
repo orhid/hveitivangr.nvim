@@ -148,6 +148,8 @@ hl.languages = {
 	-- markdown
 	markdownH1 = {fg = colour.celadon, bold = true},
 	markdownH2 = {fg = colour.celadon, bold = true, italic = true},
+	markdownH3 = {fg = colour.tea, bold = true},
+	markdownH4 = {fg = colour.tea, bold = true, italic = true},
 	markdownError = 'Error',
 }
 
