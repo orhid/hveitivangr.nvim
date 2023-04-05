@@ -31,6 +31,16 @@ hl.editor = {
 	DiffChange = {fg = colour.jasmine},
 	DiffDelete = {fg = colour.terracotta},
 	DiffText = {fg = colour.umber},
+
+	-- pmenu
+	Pmenu = {fg = colour.eggshell, bg = colour.umber},
+	PmenuSel = {fg = colour.umber, bg = colour.eggshell},
+	-- PmenuSbar = PmenuSel,
+	-- PmenuThumb = {bg = colour.jasmine},
+
+	-- diagnostics
+	Error = {fg = colour.terracotta},
+	ErrorMsg = 'Error',
 }
 
 hl.textanalysis = {
@@ -102,12 +112,43 @@ hl.plugins = {
 	["@constructor"] = 'Delimeter',
 	["@function.call"] = 'Function',
 	["@function.builtin"] = 'Function',
+
+	-- lsp
+	LspInfoFiletype = {fg = colour.sky},
+	LspInfoList = {fg = colour.jasmine},
+	LspInfoTitle = {fg = colour.sky, bold = true},
+
+	DiagnosticError = {fg = colour.terracotta},
+	DiagnosticHint = {fg = colour.sky},
+	DiagnosticInfo = {fg = colour.celadon},
+	DiagnosticWarn = {fg = colour.jasmine},
+	DiagnosticFloatingError = 'DiagnosticError',
+	DiagnosticFloatingHint = 'DiagnosticHint',
+	DiagnosticFloatingInfo = 'DiagnosticInfo',
+	DiagnosticFloatingWarn = 'DiagnosticWarn',
+	DiagnosticSignError = 'DiagnosticError',
+	DiagnosticSignHint = 'DiagnosticHint',
+	DiagnosticSignInfo = 'DiagnosticInfo',
+	DiagnosticSignWarn = 'DiagnosticWarn',
+	DiagnosticUnderlineError = {underline = true},
+	DiagnosticUnderlineHint = {underline = true},
+	DiagnosticUnderlineInfo = {underline = true},
+	DiagnosticUnderlineWarn = {underline = true},
+	DiagnosticVirtualTextError = 'DiagnosticError',
+	DiagnosticVirtualTextHint = 'DiagnosticHint',
+	DiagnosticVirtualTextInfo = 'DiagnosticInfo',
+	DiagnosticVirtualTextWarn = 'DiagnosticWarn',
 }
 
 hl.languages = {
   -- lua
 	luaFunc = 'Function',
   luaTable = 'Delimiter',
+
+	-- markdown
+	markdownH1 = {fg = colour.celadon, bold = true},
+	markdownH2 = {fg = colour.celadon, bold = true, italic = true},
+	markdownError = 'Error',
 }
 
 return hl
