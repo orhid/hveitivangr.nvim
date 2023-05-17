@@ -138,6 +138,12 @@ hl.plugins = {
 	DiagnosticVirtualTextHint = 'DiagnosticHint',
 	DiagnosticVirtualTextInfo = 'DiagnosticInfo',
 	DiagnosticVirtualTextWarn = 'DiagnosticWarn',
+
+  -- spellchecker
+  SpellBad = { fg = colour.terracotta, underline = true },
+  SpellCap = 'SpellBad',
+  SpellRare = 'SpellBad',
+  SpellLocal = 'SpellBad',
 }
 
 hl.languages = {
