@@ -3,7 +3,7 @@ local hl = {}
 
 hl.editor = {
 	LineNr = {fg = colour.shadow},
-	CursorLine = {bg = colour.jet},
+	CursorLine = {bg = 'None'},
   CursorLineNr = {fg = colour.eggshell, bold = true},
 
 	VertSplit = {fg = colour.umber},
@@ -12,7 +12,7 @@ hl.editor = {
 	-- cursor
 	Cursor = {reverse = true},
 	CursorIM = 'Cursor',
-	CursorColumn = {bg = colour.jet},
+	CursorColumn = {bg = 'None'},
 	SignColumn = 'CursorColumn',
 
 	-- status line
@@ -105,7 +105,6 @@ hl.plugins = {
 	["@variable.builtin"] = 'Structure',
 	["@include"] = 'Keyword',
 	["@storageclass"] = 'StorageClass',
-	["@type.qualifier"] = 'StorageClass',
 	["@type.qualifier"] = 'StorageClass',
 	["@exception"] = {fg = colour.terracotta, italic = true},
 	["@namespace"] = {fg = colour.lavender},
